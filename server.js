@@ -32,8 +32,21 @@ const db = mongoose.connection;
 app.post("/websiteinfo", async (req, res) => {
   console.log(req.body);
   let pass = req.body.websitePassword;
-
   let hashed = await bcrypt.hash(pass, 10);
+  let hashedWebsiteInfo = new websiteInfo_Schema({
+    passwordId: req.body.id,
+    website: req.body.website,
+    password: hashed,
+  });
+
+  await hashedWebsiteInfo.save((err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  });
+
   console.log(hashed);
   res.sendStatus(201);
 });
