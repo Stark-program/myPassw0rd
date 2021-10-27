@@ -12,9 +12,12 @@ function App() {
   const updateLogin = () => {
     setLoggedIn(true);
   };
+  const updateLogOut = () => {
+    setLoggedIn(false);
+  };
 
   return loggedIn ? (
-    <RenderWebsiteInfo />
+    <RenderWebsiteInfo updateLogout={updateLogOut} />
   ) : (
     <RenderLogin updateLogin={updateLogin} />
   );

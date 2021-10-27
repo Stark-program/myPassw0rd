@@ -130,7 +130,7 @@ const RenderWebsiteInfo = (props) => {
           + Add New Password
         </button>
         <br></br>
-        <button>Logout</button>
+        <button onClick={props.updateLogout}>Logout</button>
       </div>
       {renderModal()}
     </div>
