@@ -67,7 +67,6 @@ app.post("/getpassword", async (req, res) => {
   let info = await website_Info_Schema.findOne({
     passwordId: req.body.passwordId,
   });
-  console.log(info);
 });
 
 app.listen(3001, () => {
