@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const websiteInfo_Schema = require("./Schemas/websiteInfoSchema");
+const website_Info_Schema = require("./Schemas/websiteInfoSchema");
+const user_Schema = require("./Schemas/users");
 
 const app = express();
 app.use(cors());
@@ -33,7 +34,7 @@ app.post("/websiteinfo", async (req, res) => {
   console.log(req.body);
   let pass = req.body.websitePassword;
   let hashed = await bcrypt.hash(pass, 10);
-  let hashedWebsiteInfo = new websiteInfo_Schema({
+  let hashedWebsiteInfo = new website_Info_Schema({
     passwordId: req.body.passwordId,
     website: req.body.website,
     password: hashed,
@@ -53,7 +54,7 @@ app.post("/websiteinfo", async (req, res) => {
 });
 
 app.get("/websiteinfo", async (req, res) => {
-  websiteInfo_Schema.find({}, (err, info) => {
+  website_Info_Schema.find({}, (err, info) => {
     if (err) {
       console.log(err);
     } else {
@@ -63,7 +64,7 @@ app.get("/websiteinfo", async (req, res) => {
 });
 
 app.post("/getpassword", async (req, res) => {
-  let info = await websiteInfo_Schema.findOne({
+  let info = await website_Info_Schema.findOne({
     passwordId: req.body.passwordId,
   });
   console.log(info);
