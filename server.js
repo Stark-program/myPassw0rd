@@ -34,7 +34,7 @@ app.post("/websiteinfo", async (req, res) => {
   let pass = req.body.websitePassword;
   let hashed = await bcrypt.hash(pass, 10);
   let hashedWebsiteInfo = new websiteInfo_Schema({
-    passwordId: req.body.id,
+    passwordId: req.body.passwordId,
     website: req.body.website,
     password: hashed,
   });
@@ -42,12 +42,37 @@ app.post("/websiteinfo", async (req, res) => {
   await hashedWebsiteInfo.save((err, info) => {
     if (err) {
       console.log(err);
+      res.sendStatus(err);
     } else {
       console.log(info);
+      res.sendStatus(201);
     }
   });
 
   console.log(hashed);
+});
+
+app.get("/websiteinfo", async (req, res) => {
+  websiteInfo_Schema.find({}, (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).json(info);
+    }
+  });
+});
+
+app.post("/getpassword", async (req, res) => {
+  await websiteInfo_Schema.find(
+    { passwordId: req.body.passwordId },
+    (err, info) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(info);
+      }
+    }
+  );
   res.sendStatus(201);
 });
 

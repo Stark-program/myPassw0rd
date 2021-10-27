@@ -1,7 +1,7 @@
 import "./App.css";
 import { Modal, Input } from "antd";
 import "antd/dist/antd.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 function App() {
@@ -12,19 +12,48 @@ function App() {
   const [password, setPassword] = useState("");
   const [information, setInformation] = useState([]);
   const serverUrl = "http://localhost:3001";
+
+  useEffect(() => {
+    async function fetchData() {
+      await axios.get(`${serverUrl}/websiteinfo`).then((res) => {
+        let data = res.data;
+        setInformation(data);
+      });
+    }
+    fetchData();
+  }, []);
+
+  const getPassword = async (e) => {
+    let passwordId = { passwordId: e.target.id };
+    await axios
+      .post(`${serverUrl}/getpassword`, passwordId)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(e.target.id);
+  };
+
   const renderContent = (data) => {
-    console.log(data);
     return (
-      <div className="information">
+      <div className="information" key={data.passwordId}>
         <h4>{data.website}</h4>
-        <a id={data.id}>click here to get your password</a>
+        <button
+          id={data.passwordId}
+          key={data.passwordId}
+          onClick={getPassword}
+        >
+          click here to get your password
+        </button>
       </div>
     );
   };
 
   const handleOk = async () => {
     let websiteInformation = {
-      id: Math.floor(Math.random() * 1000000000),
+      passwordId: Math.floor(Math.random() * 1000000000),
       website: site,
       websitePassword: password,
     };
@@ -49,7 +78,7 @@ function App() {
       setModalText("");
     }, 2000);
   };
-  console.log("this is the information 2", information);
+
   const handleCancel = () => {
     console.log("Clicked cancel button");
     setVisible(false);
