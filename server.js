@@ -63,17 +63,10 @@ app.get("/websiteinfo", async (req, res) => {
 });
 
 app.post("/getpassword", async (req, res) => {
-  await websiteInfo_Schema.find(
-    { passwordId: req.body.passwordId },
-    (err, info) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(info);
-      }
-    }
-  );
-  res.sendStatus(201);
+  let info = await websiteInfo_Schema.findOne({
+    passwordId: req.body.passwordId,
+  });
+  console.log(info);
 });
 
 app.listen(3001, () => {
