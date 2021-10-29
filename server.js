@@ -69,6 +69,26 @@ app.post("/getpassword", async (req, res) => {
   });
 });
 
+app.post("/signup", async (req, res) => {
+  let pass = req.body.password;
+  let hashedPass = await bcrypt.hash(pass, 10);
+  let user = new user_Schema({
+    username: req.body.username,
+    password: hashedPass,
+    email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+  });
+
+  await user.save((err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.sendStatus(201);
+      console.log(info);
+    }
+  });
+});
+
 app.listen(3001, () => {
   console.log("listening on port 3001");
 });

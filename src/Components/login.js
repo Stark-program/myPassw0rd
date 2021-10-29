@@ -1,13 +1,36 @@
 import { Input, Button } from "antd";
 import MaskedInput from "antd-mask-input";
 import { useState } from "react";
+import axios from "axios";
 
 const RenderLogin = (props) => {
   const [username, setUSername] = useState("");
   const [password, setPassword] = useState("");
+  const [signupUsername, setSignupUsername] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [signUp, setSignUp] = useState(false);
+  const serverUrl = "http://localhost:3001";
+
+  const onSignup = () => {
+    let signupInfo = {
+      username: signupUsername,
+      password: signupPassword,
+      email: email,
+      phoneNumber: phoneNumber,
+    };
+
+    axios
+      .post(`${serverUrl}/signup`, signupInfo)
+      .then((res) => {
+        setSignUp(false);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const renderSignUp = () => {
     return (
@@ -21,17 +44,17 @@ const RenderLogin = (props) => {
             <Input
               className="login-input"
               addonBefore="Username"
-              value={username}
+              value={signupUsername}
               onChange={(e) => {
-                setUSername(e.target.value);
+                setSignupUsername(e.target.value);
               }}
             ></Input>
             <Input
               className="login-input"
               addonBefore="Password"
-              value={password}
+              value={signupPassword}
               onChange={(e) => {
-                setPassword(e.target.value);
+                setSignupPassword(e.target.value);
               }}
             ></Input>
             <Input
@@ -59,7 +82,7 @@ const RenderLogin = (props) => {
                 back to login
               </a>
             </div>
-            <Button type="primary" onClick={props.updateLogin}>
+            <Button type="primary" onClick={onSignup}>
               Sign Up
             </Button>
           </div>
