@@ -3,10 +3,16 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 10px;
 }
+html,
+body,
+#root {
+  height: 100%;
+}
 .grid-style {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 10px;
+  height: 100%;
 }
 .every-column {
   text-align: center;
@@ -18,4 +24,22 @@
 .information {
   display: flex;
   justify-content: space-between;
+}
+.login-page-container {
+  margin: 10px;
+}
+.login-input {
+  margin: 2px;
+}
+.login {
+  border: 1px solid black;
+  padding: 25px;
+}
+.login-details-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+.login-button-links {
+  background: none;
+  border: none;
 }
