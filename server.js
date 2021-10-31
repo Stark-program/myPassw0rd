@@ -89,6 +89,10 @@ app.post("/signup", async (req, res) => {
   });
 });
 
+app.post("/login", async (req, res) => {
+  console.log(req.body);
+});
+
 app.listen(3001, () => {
   console.log("listening on port 3001");
 });

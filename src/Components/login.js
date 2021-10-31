@@ -25,6 +25,27 @@ const RenderLogin = (props) => {
       .post(`${serverUrl}/signup`, signupInfo)
       .then((res) => {
         setSignUp(false);
+        setSignupPassword("");
+        setSignupUsername("");
+        setEmail("");
+        setPhoneNumber("");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onLogin = () => {
+    let loginInfo = {
+      username: username,
+      password: password,
+    };
+
+    axios
+      .post(`${serverUrl}/login`, loginInfo)
+      .then((res) => {
+        props.updateLogin();
         console.log(res);
       })
       .catch((err) => {
@@ -123,7 +144,7 @@ const RenderLogin = (props) => {
                 signup here!
               </a>
             </div>
-            <Button type="primary" onClick={props.updateLogin}>
+            <Button type="primary" onClick={onLogin}>
               Login
             </Button>
           </div>
