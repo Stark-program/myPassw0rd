@@ -72,24 +72,36 @@ app.post("/getpassword", async (req, res) => {
 app.post("/signup", async (req, res) => {
   let pass = req.body.password;
   let hashedPass = await bcrypt.hash(pass, 10);
-  let user = new user_Schema({
-    username: req.body.username,
-    password: hashedPass,
-    email: req.body.email,
-    phoneNumber: req.body.phoneNumber,
-  });
-
-  await user.save((err, info) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.sendStatus(201);
-      console.log(info);
-    }
-  });
+  let checkUser = await user_Schema.exists({ username: req.body.username });
+  console.log(checkUser);
+  if (!checkUser) {
+    let user = new user_Schema({
+      username: req.body.username,
+      password: hashedPass,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+    });
+    await user.save((err, info) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.sendStatus(201);
+        console.log(info);
+      }
+    });
+  } else {
+    res.sendStatus(409);
+  }
 });
 
 app.post("/login", async (req, res) => {
+  let user = await user_Schema.find({ username: req.body.username });
+  console.log(user);
+  let pass = req.body.password;
+
+  if (user.length === 0) {
+    res.status(406).send("user not found");
+  }
   console.log(req.body);
 });
 

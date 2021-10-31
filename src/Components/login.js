@@ -32,24 +32,35 @@ const RenderLogin = (props) => {
         console.log(res);
       })
       .catch((err) => {
+        if (err.message == "Request failed with status code 409") {
+          alert("Username already exists");
+          setSignupPassword("");
+          setSignupUsername("");
+          setEmail("");
+          setPhoneNumber("");
+        }
         console.log(err);
       });
   };
 
-  const onLogin = () => {
+  const onLogin = async () => {
     let loginInfo = {
       username: username,
       password: password,
     };
 
-    axios
+    await axios
       .post(`${serverUrl}/login`, loginInfo)
       .then((res) => {
-        props.updateLogin();
+        // props.updateLogin();
         console.log(res);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.message == "Request failed with status code 406") {
+          setUSername("");
+          setPassword("");
+          alert("User not found");
+        }
       });
   };
 
