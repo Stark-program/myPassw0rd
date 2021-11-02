@@ -3,6 +3,7 @@ import "antd/dist/antd.css";
 import { useState } from "react";
 import RenderWebsiteInfo from "./Components/websiteInfo";
 import RenderLogin from "./Components/login";
+import RenderPhoneAuthorization from "./Components/phoneAuth";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -13,7 +14,9 @@ function App() {
     setLoggedIn(false);
   };
 
-  return loggedIn ? (
+  return <RenderPhoneAuthorization />;
+
+  loggedIn ? (
     <RenderWebsiteInfo updateLogout={updateLogOut} />
   ) : (
     <RenderLogin updateLogin={updateLogin} />
