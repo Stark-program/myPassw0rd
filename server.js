@@ -80,6 +80,7 @@ app.post("/signup", async (req, res) => {
       password: hashedPass,
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
+      phoneAuthorized: false,
     });
     await user.save((err, info) => {
       if (err) {

@@ -7,6 +7,7 @@ import RenderPhoneAuthorization from "./Components/phoneAuth";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+
   const updateLogin = () => {
     setLoggedIn(true);
   };
@@ -14,9 +15,7 @@ function App() {
     setLoggedIn(false);
   };
 
-  return <RenderPhoneAuthorization />;
-
-  loggedIn ? (
+  return loggedIn ? (
     <RenderWebsiteInfo updateLogout={updateLogOut} />
   ) : (
     <RenderLogin updateLogin={updateLogin} />

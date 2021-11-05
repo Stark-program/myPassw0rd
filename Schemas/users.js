@@ -7,6 +7,7 @@ const userSchema = new Schema({
   password: String,
   email: String,
   phoneNumber: String,
+  phoneAuthorized: Boolean,
 });
 
 const user_Schema = mongoose.model(users, userSchema);

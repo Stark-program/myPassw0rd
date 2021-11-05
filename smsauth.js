@@ -6,20 +6,31 @@ const accountauth = process.env.TWILIO_ACCOUNT_AUTHTOKEN;
 console.log(accountauth);
 const client = require("twilio")(accountsid, accountauth);
 
-const sid = "VA95a5c43373fd5a6c340323486f3fa69f";
-client.verify.services
-  .create({ friendlyName: "myPassw0rd Verify!" })
-  .then((service) => {
-    sid.concat(service.sid);
-    console.log(service.sid);
-  });
+const sid = process.env.VERIFICATION_SID;
+console.log("this is the sid", sid);
+// client.verify.services
+//   .create({ friendlyName: "myPassw0rd Verify!" })
+//   .then((service) => {
+//     sid.concat(service.sid);
+//     console.log(service.sid);
+//   });
+async function runCheck() {
+  let check = await client.verify.services(sid);
+
+  console.log("this is check", check);
+}
+runCheck();
 // client.verify
 //   .services(sid)
-//   .verifications.create({ to: "+17207635686", channel: "sms" })
-//   .then((verification) => console.log(verification));
+//   .verificationChecks.create({ to: `+17207635686`, code: "141199" })
+//   .then((verification_check) => console.log(verification_check))
+//   .catch((err) => console.log(err));
 
 // client.verify
 //   .services(sid)
-//   .verificationChecks.create({ to: `+17207635686`, code: "950146" })
-//   .then((verification_check) => console.log(verification_check))
+//   .verifications("VE4fdb4615ede6c06a00e30279d5edc459")
+//   .fetch()
+//   .then((res) => {
+//     console.log(res);
+//   })
 //   .catch((err) => console.log(err));

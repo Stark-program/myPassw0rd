@@ -2,6 +2,7 @@ import { Input, Button } from "antd";
 import MaskedInput from "antd-mask-input";
 import { useState } from "react";
 import axios from "axios";
+import PhoneAuthorization from "./phoneAuth";
 
 const RenderLogin = (props) => {
   const [username, setUSername] = useState("");
@@ -11,7 +12,13 @@ const RenderLogin = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [signUp, setSignUp] = useState(false);
+  const [renderSmsAuth, setRenderSmsAuth] = useState(false);
   const serverUrl = "http://localhost:3001";
+
+  const updateSmsAuth = () => {
+    setSignUp(false);
+    setRenderSmsAuth(false);
+  };
 
   const onSignup = () => {
     let signupInfo = {
@@ -24,7 +31,7 @@ const RenderLogin = (props) => {
     axios
       .post(`${serverUrl}/signup`, signupInfo)
       .then((res) => {
-        setSignUp(false);
+        setRenderSmsAuth(true);
         setSignupPassword("");
         setSignupUsername("");
         setEmail("");
@@ -65,7 +72,9 @@ const RenderLogin = (props) => {
   };
 
   const renderSignUp = () => {
-    return (
+    return renderSmsAuth ? (
+      <PhoneAuthorization updateAuth={updateSmsAuth} />
+    ) : (
       <div className="loginWrapper grid-style">
         <div className="col-1"></div>
         <div className="col-2 every-column">
