@@ -6,6 +6,13 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const website_Info_Schema = require("./Schemas/websiteInfoSchema");
 const user_Schema = require("./Schemas/users");
+const accountsid = process.env.TWILIO_ACCOUNT_SID;
+console.log(accountsid);
+const accountauth = process.env.TWILIO_ACCOUNT_AUTHTOKEN;
+console.log(accountauth);
+const client = require("twilio")(accountsid, accountauth);
+
+const sid = process.env.VERIFICATION_SID;
 
 const app = express();
 app.use(cors());
@@ -87,6 +94,13 @@ app.post("/signup", async (req, res) => {
         console.log(err);
       } else {
         res.sendStatus(201);
+        client.verify
+          .services(sid)
+          .verifications.create({
+            to: `+1${req.body.phoneNumber}`,
+            channel: "sms",
+          })
+          .then((verification) => console.log(verification.status));
         console.log(info);
       }
     });
@@ -96,16 +110,68 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  let user = await user_Schema.find({ username: req.body.username });
-  console.log(user);
-  let pass = req.body.password;
-
-  if (user.length === 0) {
+  let user = await user_Schema.findOne({ username: req.body.username });
+  if (!user) {
     res.status(406).send("user not found");
+  }
+
+  if (user) {
+    console.log(user);
+    let pass = req.body.password;
+
+    bcrypt.compare(pass, user.password, function (err, result) {
+      if (err) {
+        console.log(err);
+      }
+      if (result) {
+        console.log("this is result", result);
+        if (!user.phoneAuthorized) {
+          return res.sendStatus(409);
+        } else res.sendStatus(202);
+      } else {
+        res.sendStatus(203);
+      }
+    });
   }
   console.log(req.body);
 });
 
+app.post("/phoneVerification", async (req, res) => {
+  console.log("this is the code and shit", req.body);
+  client.verify
+    .services(sid)
+    .verificationChecks.create({
+      to: `+1${req.body.number}`,
+      code: `${req.body.code}`,
+    })
+    .then(async (verification_check) => {
+      let verifyStatus = verification_check.status;
+      if (verifyStatus === "approved") {
+        let user = await user_Schema.findOne({ username: req.body.name });
+        user.phoneAuthorized = true;
+        await user.save();
+        res.sendStatus(201);
+      }
+    })
+    .catch((err) => console.log(err));
+});
+app.post("/loginPhoneAuthorization", async (req, res) => {
+  let user = await user_Schema.findOne({ username: req.body.name });
+
+  client.verify
+    .services(sid)
+    .verifications.create({
+      to: `+1${user.phoneNumber}`,
+      channel: "sms",
+    })
+    .then((verification) => {
+      res.json({ number: user.phoneNumber, name: user.username });
+      console.log(verification.status);
+    });
+
+  console.log(user);
+  console.log(req.body);
+});
 app.listen(3001, () => {
   console.log("listening on port 3001");
 });
